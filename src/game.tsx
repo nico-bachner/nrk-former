@@ -7,6 +7,7 @@ import { cn } from '@/utils/cn'
 import { Hint } from './icons/Hint'
 import { Restart } from './icons/Restart'
 import { X } from './icons/X'
+import { getHint } from './lib/getHint'
 import { getTileGroups } from './lib/getTileGroups'
 
 const getTileColor = (tile: string) => {
@@ -54,10 +55,7 @@ export const Game: React.FC = () => {
   }
 
   const tileGroups = useMemo(() => getTileGroups(board), [board])
-  const hint = useMemo(
-    () => tileGroups.sort((a, b) => b.length - a.length)[0],
-    [tileGroups],
-  )
+  const hint = useMemo(() => getHint(board), [board])
 
   return (
     <div className="flex flex-col gap-4">
