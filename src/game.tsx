@@ -17,8 +17,6 @@ const getTileColor = (tile: string) => {
       return 'bg-blue-500'
     case 'g':
       return 'bg-green-500'
-    default:
-      return 'bg-transparent'
   }
 }
 
@@ -65,10 +63,20 @@ export const Game: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex flex-row gap-2">
-        {board.map((column, i) => (
-          <div key={i} className="flex flex-col-reverse gap-2">
-            {column.map((tile, j) => (
+      <div className="grid grid-flow-col grid-cols-7 grid-rows-9 gap-2">
+        {board.map((column, i) =>
+          column.map((tile, j) => {
+            if (tile == '') {
+              return (
+                <div
+                  key={j}
+                  style={{ gridRow: 9 - j, gridColumn: i + 1 }}
+                  className="size-12"
+                />
+              )
+            }
+
+            return (
               <button
                 key={j}
                 onClick={() => {
@@ -91,12 +99,13 @@ export const Game: React.FC = () => {
                   setBoard(newBoard)
                   setStepCount(stepCount + 1)
                 }}
+                style={{ gridRow: 9 - j, gridColumn: i + 1 }}
               >
                 <div className={cn('size-12', getTileColor(tile))} />
               </button>
-            ))}
-          </div>
-        ))}
+            )
+          }),
+        )}
       </div>
     </div>
   )
