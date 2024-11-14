@@ -96,7 +96,7 @@ export const Game: React.FC = () => {
                 <div
                   key={j}
                   style={{ gridRow: 9 - j, gridColumn: i + 1 }}
-                  className="size-12"
+                  className="aspect-square"
                 />
               )
             }
@@ -126,7 +126,7 @@ export const Game: React.FC = () => {
                 }}
                 style={{ gridRow: 9 - j, gridColumn: i + 1 }}
               >
-                <div className={cn('size-12', getTileColor(tile))} />
+                <div className={cn('aspect-square', getTileColor(tile))} />
               </button>
             )
           }),
