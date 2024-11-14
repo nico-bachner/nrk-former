@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { cn } from '@/utils/cn'
 
@@ -32,19 +32,44 @@ const BOARD = [
 
 export const Game: React.FC = () => {
   const [board, setBoard] = useState(BOARD)
-
   const [stepCount, setStepCount] = useState(0)
+  const [record, setRecord] = useState<number | undefined>(undefined)
+
+  useEffect(() => {
+    const record = localStorage.getItem('record')
+
+    if (record) {
+      setRecord(parseInt(record))
+    }
+  }, [])
+
+  if (board.flat().every((tile) => tile == '')) {
+    if (!record || stepCount < record) {
+      setRecord(stepCount)
+      localStorage.setItem('record', stepCount.toString())
+    }
+  }
 
   const tileGroups = useMemo(() => getTileGroups(board), [board])
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex justify-between">
-        <div className="flex flex-col items-center gap-2">
-          <p className="font-bold uppercase text-[#DBBFFA]">Turns</p>
+      <div className="flex justify-between gap-4">
+        <div className="flex gap-4">
+          <div className="flex flex-col items-center gap-2">
+            <p className="font-bold uppercase text-[#DBBFFA]">Turns</p>
 
-          <div className="flex h-12 w-16 items-center justify-center rounded bg-[#641FB3]">
-            <p className="text-xl font-bold text-white">{stepCount}</p>
+            <div className="flex h-12 w-16 items-center justify-center rounded bg-[#641FB3]">
+              <p className="text-xl font-bold text-white">{stepCount}</p>
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center gap-2">
+            <p className="font-bold uppercase text-[#DBBFFA]">Record</p>
+
+            <div className="flex h-12 w-16 items-center justify-center rounded bg-[#641FB3]">
+              <p className="text-xl font-bold text-white">{record}</p>
+            </div>
           </div>
         </div>
 
