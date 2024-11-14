@@ -2,15 +2,14 @@
 
 import { useEffect, useState } from 'react'
 
+import { Tile } from '@/Tile'
 import { BOARDS } from '@/boards'
 import { HintIcon } from '@/icons/Hint'
 import { RestartIcon } from '@/icons/Restart'
-import { XIcon } from '@/icons/X'
+import { SquareIcon } from '@/icons/Square'
 import { getHint } from '@/lib/getHint'
 import { getTileGroups } from '@/lib/getTileGroups'
 import { Hint } from '@/types'
-
-import { Tile } from './Tile'
 
 const BOARD = BOARDS[1]
 
@@ -40,25 +39,25 @@ export const Game: React.FC = () => {
       <div className="flex justify-between gap-4">
         <div className="flex gap-4">
           <div className="flex flex-col items-center gap-2">
-            <p className="font-bold uppercase text-[#DBBFFA]">Turns</p>
+            <p className="font-bold uppercase text-purple-300">Turns</p>
 
-            <div className="flex h-12 w-16 items-center justify-center rounded bg-[#641FB3]">
-              <p className="text-xl font-bold text-white">{stepCount}</p>
+            <div className="flex h-12 w-16 items-center justify-center rounded bg-purple-900">
+              <p className="text-xl font-bold text-purple-200">{stepCount}</p>
             </div>
           </div>
 
           <div className="flex flex-col items-center gap-2">
-            <p className="font-bold uppercase text-[#DBBFFA]">Record</p>
+            <p className="font-bold uppercase text-purple-300">Record</p>
 
-            <div className="flex h-12 w-16 items-center justify-center rounded bg-[#641FB3]">
-              <p className="text-xl font-bold text-white">{record}</p>
+            <div className="flex h-12 w-16 items-center justify-center rounded bg-purple-900">
+              <p className="text-xl font-bold text-purple-200">{record}</p>
             </div>
           </div>
         </div>
 
         <div className="flex gap-4">
           <div className="flex flex-col items-center gap-2">
-            <p className="font-bold uppercase text-[#DBBFFA]">Hint</p>
+            <p className="font-bold uppercase text-purple-300">Hint</p>
 
             <button
               onClick={() => {
@@ -68,14 +67,14 @@ export const Game: React.FC = () => {
                 const hint = getHint(board, Math.min(1, movesLeft - 1))
                 setHint(hint)
               }}
-              className="flex size-12 items-center justify-center rounded-full bg-[#641FB3]"
+              className="flex size-12 items-center justify-center rounded-full bg-purple-700"
             >
-              <HintIcon className="text-white" />
+              <HintIcon className="text-purple-100" />
             </button>
           </div>
 
           <div className="flex flex-col items-center gap-2">
-            <p className="font-bold uppercase text-[#DBBFFA]">Restart</p>
+            <p className="font-bold uppercase text-purple-300">Restart</p>
 
             <button
               onClick={() => {
@@ -83,9 +82,9 @@ export const Game: React.FC = () => {
                 setStepCount(0)
                 setHint(undefined)
               }}
-              className="flex size-12 items-center justify-center rounded-full bg-[#641FB3]"
+              className="flex size-12 items-center justify-center rounded-full bg-purple-700"
             >
-              <RestartIcon className="text-white" />
+              <RestartIcon className="text-purple-100" />
             </button>
           </div>
         </div>
@@ -134,7 +133,7 @@ export const Game: React.FC = () => {
                 <Tile tile={tile} />
                 {hint &&
                   hint.tileGroup.some(([i2, j2]) => i2 == i && j2 == j) && (
-                    <XIcon className="absolute inset-0 h-full w-full text-red-700" />
+                    <SquareIcon className="absolute inset-0 h-full w-full text-white" />
                   )}
               </button>
             )
