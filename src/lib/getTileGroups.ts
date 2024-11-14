@@ -7,32 +7,26 @@ export const getTileGroups = (board: Board) => {
     column.forEach((tile, j) => {
       if (i > 0 && j > 0) {
         if (tile == board[i - 1][j] && tile == board[i][j - 1]) {
-          let tileGroup1Index: number | null = null
-          let tileGroup2Index: number | null = null
+          const tileGroup1Index = tileGroups.findIndex((tileGroup) =>
+            tileGroup.some(([i2, j2]) => i2 == i - 1 && j2 == j),
+          )
 
-          tileGroups.forEach((tileGroup, k) => {
-            tileGroup.forEach(([i2, j2]) => {
-              if (i2 == i - 1 && j2 == j) {
-                tileGroup1Index = k
-              }
-              if (i2 == i && j2 == j - 1) {
-                tileGroup2Index = k
-              }
-            })
-          })
+          const tileGroup2Index = tileGroups.findIndex((tileGroup) =>
+            tileGroup.some(([i2, j2]) => i2 == i && j2 == j - 1),
+          )
 
-          const tileGroup1 = tileGroups[tileGroup1Index!]
-          const tileGroup2 = tileGroups[tileGroup2Index!]
+          const tileGroup1 = tileGroups[tileGroup1Index]
+          const tileGroup2 = tileGroups[tileGroup2Index]
 
           tileGroups = [
-            ...tileGroups.slice(0, tileGroup1Index!),
-            ...tileGroups.slice(tileGroup1Index! + 1),
+            ...tileGroups.slice(0, tileGroup1Index),
+            ...tileGroups.slice(tileGroup1Index + 1),
           ]
 
           tileGroups = [
-            ...tileGroups.slice(0, tileGroup2Index!),
+            ...tileGroups.slice(0, tileGroup2Index),
             [...tileGroup1, ...tileGroup2, [i, j]],
-            ...tileGroups.slice(tileGroup2Index! + 1),
+            ...tileGroups.slice(tileGroup2Index + 1),
           ]
         } else if (tile == board[i - 1][j]) {
           tileGroups.forEach((tileGroup) => {

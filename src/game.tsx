@@ -1,9 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { popTileGroup } from '@/lib/popTileGroup'
 import { cn } from '@/utils/cn'
+
+import { getTileGroups } from './lib/getTileGroups'
 
 const getTileColor = (tile: string) => {
   switch (tile) {
@@ -31,6 +33,8 @@ export const Game: React.FC = () => {
     ['b', 'o', 'p', 'p', 'p', 'b', 'p', 'b', 'g'],
   ])
 
+  const tileGroups = useMemo(() => getTileGroups(board), [board])
+
   return (
     <div className="flex flex-row gap-2">
       {board.map((column, i) => (
@@ -39,7 +43,7 @@ export const Game: React.FC = () => {
             <button
               key={j}
               onClick={() => {
-                const newBoard = popTileGroup(board, [i, j])
+                const newBoard = popTileGroup(board, tileGroups, [i, j])
                 setBoard(newBoard)
               }}
             >
