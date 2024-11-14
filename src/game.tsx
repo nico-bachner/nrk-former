@@ -4,7 +4,9 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { cn } from '@/utils/cn'
 
+import { Hint } from './icons/Hint'
 import { Restart } from './icons/Restart'
+import { X } from './icons/X'
 import { getTileGroups } from './lib/getTileGroups'
 
 const getTileColor = (tile: string) => {
@@ -12,7 +14,7 @@ const getTileColor = (tile: string) => {
     case 'p':
       return 'bg-pink-500 rounded-full'
     case 'o':
-      return 'bg-orange-500'
+      return 'bg-amber-500'
     case 'b':
       return 'bg-blue-500'
     case 'g':
@@ -34,6 +36,7 @@ export const Game: React.FC = () => {
   const [board, setBoard] = useState(BOARD)
   const [stepCount, setStepCount] = useState(0)
   const [record, setRecord] = useState<number | undefined>(undefined)
+  const [showHint, setShowHint] = useState(false)
 
   useEffect(() => {
     const record = localStorage.getItem('record')
@@ -51,6 +54,10 @@ export const Game: React.FC = () => {
   }
 
   const tileGroups = useMemo(() => getTileGroups(board), [board])
+  const hint = useMemo(
+    () => tileGroups.sort((a, b) => b.length - a.length)[0],
+    [tileGroups],
+  )
 
   return (
     <div className="flex flex-col gap-4">
@@ -73,18 +80,34 @@ export const Game: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex flex-col items-center gap-2">
-          <p className="font-bold uppercase text-[#DBBFFA]">Restart</p>
+        <div className="flex gap-4">
+          <div className="flex flex-col items-center gap-2">
+            <p className="font-bold uppercase text-[#DBBFFA]">Hint</p>
 
-          <button
-            onClick={() => {
-              setBoard(BOARD)
-              setStepCount(0)
-            }}
-            className="flex size-12 items-center justify-center rounded-full bg-[#641FB3]"
-          >
-            <Restart className="text-white" />
-          </button>
+            <button
+              onClick={() => {
+                setShowHint(!showHint)
+              }}
+              className="flex size-12 items-center justify-center rounded-full bg-[#641FB3]"
+            >
+              <Hint className="text-white" />
+            </button>
+          </div>
+
+          <div className="flex flex-col items-center gap-2">
+            <p className="font-bold uppercase text-[#DBBFFA]">Restart</p>
+
+            <button
+              onClick={() => {
+                setBoard(BOARD)
+                setStepCount(0)
+                setShowHint(false)
+              }}
+              className="flex size-12 items-center justify-center rounded-full bg-[#641FB3]"
+            >
+              <Restart className="text-white" />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -123,10 +146,15 @@ export const Game: React.FC = () => {
 
                   setBoard(newBoard)
                   setStepCount(stepCount + 1)
+                  setShowHint(false)
                 }}
                 style={{ gridRow: 9 - j, gridColumn: i + 1 }}
+                className="relative"
               >
                 <div className={cn('aspect-square', getTileColor(tile))} />
+                {showHint && hint.some(([i2, j2]) => i2 == i && j2 == j) && (
+                  <X className="absolute inset-0 h-full w-full text-red-700" />
+                )}
               </button>
             )
           }),
