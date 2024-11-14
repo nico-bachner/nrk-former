@@ -2,7 +2,7 @@ import { cn } from '@/utils/cn'
 
 type IconProps = React.SVGProps<SVGSVGElement>
 
-export const X: React.FC<IconProps> = ({
+export const XIcon: React.FC<IconProps> = ({
   stroke = 'currentColor',
   className,
   ...props

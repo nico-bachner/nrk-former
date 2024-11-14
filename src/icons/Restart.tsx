@@ -2,7 +2,7 @@ import { cn } from '@/utils/cn'
 
 type IconProps = React.SVGProps<SVGSVGElement>
 
-export const Restart: React.FC<IconProps> = ({
+export const RestartIcon: React.FC<IconProps> = ({
   stroke = 'currentColor',
   className,
   ...props

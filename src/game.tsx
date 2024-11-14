@@ -1,14 +1,15 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 
+import { BOARDS } from '@/boards'
+import { HintIcon } from '@/icons/Hint'
+import { RestartIcon } from '@/icons/Restart'
+import { XIcon } from '@/icons/X'
+import { getHint } from '@/lib/getHint'
+import { getTileGroups } from '@/lib/getTileGroups'
+import { Hint } from '@/types'
 import { cn } from '@/utils/cn'
-
-import { Hint } from './icons/Hint'
-import { Restart } from './icons/Restart'
-import { X } from './icons/X'
-import { getHint } from './lib/getHint'
-import { getTileGroups } from './lib/getTileGroups'
 
 const getTileColor = (tile: string) => {
   switch (tile) {
@@ -23,21 +24,13 @@ const getTileColor = (tile: string) => {
   }
 }
 
-const BOARD = [
-  ['p', 'o', 'o', 'p', 'o', 'p', 'g', 'o', 'g'],
-  ['p', 'b', 'o', 'o', 'p', 'p', 'b', 'o', 'p'],
-  ['p', 'b', 'p', 'g', 'b', 'g', 'p', 'o', 'p'],
-  ['g', 'o', 'p', 'o', 'o', 'p', 'b', 'p', 'o'],
-  ['o', 'o', 'b', 'b', 'o', 'g', 'p', 'o', 'g'],
-  ['b', 'p', 'p', 'o', 'b', 'g', 'o', 'p', 'o'],
-  ['b', 'o', 'p', 'p', 'p', 'b', 'p', 'b', 'g'],
-]
+const BOARD = BOARDS[1]
 
 export const Game: React.FC = () => {
   const [board, setBoard] = useState(BOARD)
   const [stepCount, setStepCount] = useState(0)
   const [record, setRecord] = useState<number | undefined>(undefined)
-  const [showHint, setShowHint] = useState(false)
+  const [hint, setHint] = useState<Hint | undefined>(undefined)
 
   useEffect(() => {
     const record = localStorage.getItem('record')
@@ -53,9 +46,6 @@ export const Game: React.FC = () => {
       localStorage.setItem('record', stepCount.toString())
     }
   }
-
-  const tileGroups = useMemo(() => getTileGroups(board), [board])
-  const hint = useMemo(() => getHint(board), [board])
 
   return (
     <div className="flex flex-col gap-4">
@@ -84,11 +74,15 @@ export const Game: React.FC = () => {
 
             <button
               onClick={() => {
-                setShowHint(!showHint)
+                const movesLeft = board
+                  .flat()
+                  .filter((tile) => tile != '').length
+                const hint = getHint(board, Math.min(1, movesLeft - 1))
+                setHint(hint)
               }}
               className="flex size-12 items-center justify-center rounded-full bg-[#641FB3]"
             >
-              <Hint className="text-white" />
+              <HintIcon className="text-white" />
             </button>
           </div>
 
@@ -99,11 +93,11 @@ export const Game: React.FC = () => {
               onClick={() => {
                 setBoard(BOARD)
                 setStepCount(0)
-                setShowHint(false)
+                setHint(undefined)
               }}
               className="flex size-12 items-center justify-center rounded-full bg-[#641FB3]"
             >
-              <Restart className="text-white" />
+              <RestartIcon className="text-white" />
             </button>
           </div>
         </div>
@@ -129,7 +123,7 @@ export const Game: React.FC = () => {
                   // must be [...board] to create a shallow copy, otherwise useState doesn't detect the change
                   const newBoard = [...board]
 
-                  tileGroups
+                  getTileGroups(board)
                     .find((tileGroup) =>
                       tileGroup.some(([i2, j2]) => i2 == i && j2 == j),
                     )!
@@ -144,15 +138,16 @@ export const Game: React.FC = () => {
 
                   setBoard(newBoard)
                   setStepCount(stepCount + 1)
-                  setShowHint(false)
+                  setHint(undefined)
                 }}
                 style={{ gridRow: 9 - j, gridColumn: i + 1 }}
                 className="relative"
               >
                 <div className={cn('aspect-square', getTileColor(tile))} />
-                {showHint && hint.some(([i2, j2]) => i2 == i && j2 == j) && (
-                  <X className="absolute inset-0 h-full w-full text-red-700" />
-                )}
+                {hint &&
+                  hint.tileGroup.some(([i2, j2]) => i2 == i && j2 == j) && (
+                    <XIcon className="absolute inset-0 h-full w-full text-red-700" />
+                  )}
               </button>
             )
           }),
