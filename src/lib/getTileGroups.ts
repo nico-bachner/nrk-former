@@ -79,5 +79,14 @@ export const getTileGroups = (board: Board) => {
       })
     })
 
-  return tileGroups
+  // deduplicate - ideally this shouldn't be necessary once the above logic is correct
+  return tileGroups.map((tileGroup) =>
+    tileGroup.reduce<Coordinate[]>((previous, current) => {
+      if (!previous.some(([i, j]) => current[0] == i && current[1] == j)) {
+        previous.push(current)
+      }
+
+      return previous
+    }, []),
+  )
 }

@@ -33,6 +33,7 @@ export const Game: React.FC = () => {
   ])
 
   const tileGroups = useMemo(() => getTileGroups(board), [board])
+  console.log(tileGroups)
 
   return (
     <div className="flex flex-row gap-2">
@@ -49,6 +50,7 @@ export const Game: React.FC = () => {
                   .find((tileGroup) =>
                     tileGroup.some(([i2, j2]) => i2 == i && j2 == j),
                   )!
+                  .reverse()
                   .forEach(([i, j]) => {
                     newBoard[i] = [
                       ...newBoard[i].slice(0, j),
