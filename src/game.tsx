@@ -1,16 +1,9 @@
 'use client'
 
-import { cn } from './cn'
+import { useState } from 'react'
 
-const board = [
-  ['p', 'o', 'o', 'p', 'o', 'p', 'g', 'o', 'g'],
-  ['p', 'b', 'o', 'o', 'p', 'p', 'b', 'o', 'p'],
-  ['p', 'b', 'p', 'g', 'b', 'g', 'p', 'o', 'p'],
-  ['g', 'o', 'p', 'o', 'o', 'p', 'b', 'p', 'o'],
-  ['o', 'o', 'b', 'b', 'o', 'g', 'p', 'o', 'g'],
-  ['b', 'p', 'p', 'o', 'b', 'g', 'o', 'p', 'o'],
-  ['b', 'o', 'p', 'p', 'p', 'b', 'p', 'b', 'g'],
-]
+import { popTileGroup } from '@/lib/popTileGroup'
+import { cn } from '@/utils/cn'
 
 const getTileColor = (tile: string) => {
   switch (tile) {
@@ -27,18 +20,47 @@ const getTileColor = (tile: string) => {
   }
 }
 
-export const Game: React.FC = () => (
-  <div className="mx-auto flex flex-col gap-4">
-    <div className="flex flex-row gap-1">
+export const Game: React.FC = () => {
+  const [board, setBoard] = useState([
+    ['p', 'o', 'o', 'p', 'o', 'p', 'g', 'o', 'g'],
+    ['p', 'b', 'o', 'o', 'p', 'p', 'b', 'o', 'p'],
+    ['p', 'b', 'p', 'g', 'b', 'g', 'p', 'o', 'p'],
+    ['g', 'o', 'p', 'o', 'o', 'p', 'b', 'p', 'o'],
+    ['o', 'o', 'b', 'b', 'o', 'g', 'p', 'o', 'g'],
+    ['b', 'p', 'p', 'o', 'b', 'g', 'o', 'p', 'o'],
+    ['b', 'o', 'p', 'p', 'p', 'b', 'p', 'b', 'g'],
+  ])
+
+  const [count, setCount] = useState(0)
+
+  return (
+    <div className="flex flex-row gap-2">
       {board.map((column, i) => (
-        <div key={i} className="flex flex-col-reverse gap-1">
+        <div key={i} className="flex flex-col-reverse gap-2">
           {column.map((tile, j) => (
-            <button key={j}>
-              <div className={cn('size-8', getTileColor(tile))}></div>
+            <button
+              key={j}
+              onClick={() => {
+                const time1 = Date.now()
+                const newBoard = popTileGroup(board, [i, j])
+                console.log(Date.now() - time1)
+                console.log(newBoard)
+                setBoard(newBoard)
+              }}
+            >
+              <div className={cn('size-12', getTileColor(tile))} />
             </button>
           ))}
         </div>
       ))}
+      <button
+        onClick={() => {
+          setCount(count + 1)
+        }}
+        className="size-12 bg-white"
+      >
+        {count}
+      </button>
     </div>
-  </div>
-)
+  )
+}

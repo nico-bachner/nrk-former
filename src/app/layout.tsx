@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 
-import '@/globals.css'
+import '@/styles/tailwind.css'
 
 export const metadata: Metadata = {
   title: 'NRK Former',
@@ -13,7 +13,7 @@ type LayoutProps = {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => (
   <html lang="en">
-    <body className="antialiased">{children}</body>
+    <body className="bg-[#18052E] antialiased">{children}</body>
   </html>
 )
 
