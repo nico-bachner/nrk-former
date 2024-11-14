@@ -9,20 +9,8 @@ import { XIcon } from '@/icons/X'
 import { getHint } from '@/lib/getHint'
 import { getTileGroups } from '@/lib/getTileGroups'
 import { Hint } from '@/types'
-import { cn } from '@/utils/cn'
 
-const getTileColor = (tile: string) => {
-  switch (tile) {
-    case 'p':
-      return 'bg-pink-500 rounded-full'
-    case 'o':
-      return 'bg-amber-500'
-    case 'b':
-      return 'bg-blue-500'
-    case 'g':
-      return 'bg-green-500'
-  }
-}
+import { Tile } from './Tile'
 
 const BOARD = BOARDS[1]
 
@@ -103,7 +91,7 @@ export const Game: React.FC = () => {
         </div>
       </div>
 
-      <div className="grid grid-flow-col grid-cols-7 grid-rows-9 gap-2">
+      <div className="grid grid-flow-col grid-cols-7 grid-rows-9">
         {board.map((column, i) =>
           column.map((tile, j) => {
             if (tile == '') {
@@ -143,7 +131,7 @@ export const Game: React.FC = () => {
                 style={{ gridRow: 9 - j, gridColumn: i + 1 }}
                 className="relative"
               >
-                <div className={cn('aspect-square', getTileColor(tile))} />
+                <Tile tile={tile} />
                 {hint &&
                   hint.tileGroup.some(([i2, j2]) => i2 == i && j2 == j) && (
                     <XIcon className="absolute inset-0 h-full w-full text-red-700" />

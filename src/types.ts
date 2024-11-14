@@ -4,3 +4,4 @@ export type Hint = {
   tileGroup: Coordinate[]
   score: number
 }
+export type IconProps = React.SVGProps<SVGSVGElement>

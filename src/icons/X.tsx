@@ -1,6 +1,5 @@
+import { IconProps } from '@/types'
 import { cn } from '@/utils/cn'
-
-type IconProps = React.SVGProps<SVGSVGElement>
 
 export const XIcon: React.FC<IconProps> = ({
   stroke = 'currentColor',
