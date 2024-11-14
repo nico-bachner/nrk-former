@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from 'react'
 
-import { popTileGroup } from '@/lib/popTileGroup'
 import { cn } from '@/utils/cn'
 
 import { getTileGroups } from './lib/getTileGroups'
@@ -43,7 +42,21 @@ export const Game: React.FC = () => {
             <button
               key={j}
               onClick={() => {
-                const newBoard = popTileGroup(board, tileGroups, [i, j])
+                // must be [...board] to create a shallow copy, otherwise useState doesn't detect the change
+                const newBoard = [...board]
+
+                tileGroups
+                  .find((tileGroup) =>
+                    tileGroup.some(([i2, j2]) => i2 == i && j2 == j),
+                  )!
+                  .forEach(([i, j]) => {
+                    newBoard[i] = [
+                      ...newBoard[i].slice(0, j),
+                      ...newBoard[i].slice(j + 1),
+                      '',
+                    ]
+                  })
+
                 setBoard(newBoard)
               }}
             >
