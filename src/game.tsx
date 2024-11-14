@@ -16,7 +16,7 @@ const getTileColor = (tile: string) => {
     case 'g':
       return 'bg-green-500'
     default:
-      return 'bg-gray-500'
+      return 'bg-transparent'
   }
 }
 
@@ -31,8 +31,6 @@ export const Game: React.FC = () => {
     ['b', 'o', 'p', 'p', 'p', 'b', 'p', 'b', 'g'],
   ])
 
-  const [count, setCount] = useState(0)
-
   return (
     <div className="flex flex-row gap-2">
       {board.map((column, i) => (
@@ -41,10 +39,7 @@ export const Game: React.FC = () => {
             <button
               key={j}
               onClick={() => {
-                const time1 = Date.now()
                 const newBoard = popTileGroup(board, [i, j])
-                console.log(Date.now() - time1)
-                console.log(newBoard)
                 setBoard(newBoard)
               }}
             >
@@ -53,14 +48,6 @@ export const Game: React.FC = () => {
           ))}
         </div>
       ))}
-      <button
-        onClick={() => {
-          setCount(count + 1)
-        }}
-        className="size-12 bg-white"
-      >
-        {count}
-      </button>
     </div>
   )
 }
