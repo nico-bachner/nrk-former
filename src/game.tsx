@@ -60,7 +60,7 @@ export const Game: React.FC = () => {
             }}
             className="flex size-12 items-center justify-center rounded-full bg-[#641FB3]"
           >
-            <Restart stroke="#fff" />
+            <Restart className="text-white" />
           </button>
         </div>
       </div>

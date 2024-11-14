@@ -1,8 +1,10 @@
+import { cn } from '@/utils/cn'
+
 type IconProps = React.SVGProps<SVGSVGElement>
 
 export const Restart: React.FC<IconProps> = ({
   stroke = 'currentColor',
-  className = 'size-6',
+  className,
   ...props
 }) => (
   <svg
@@ -10,7 +12,7 @@ export const Restart: React.FC<IconProps> = ({
     fill="none"
     stroke={stroke}
     strokeWidth={1.5}
-    className={className}
+    className={cn('size-6', className)}
     viewBox="0 0 24 24"
     {...props}
   >
