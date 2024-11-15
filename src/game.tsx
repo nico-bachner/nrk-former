@@ -90,55 +90,57 @@ export const Game: React.FC = () => {
         </div>
       </div>
 
-      <div className="grid grid-flow-col grid-cols-7 grid-rows-9">
-        {board.map((column, i) =>
-          column.map((tile, j) => {
-            if (tile == '') {
+      <div className="flex">
+        {board.map((column, i) => (
+          <div key={i} className="flex flex-1 flex-col-reverse">
+            {column.map((tile, j) => {
+              if (tile == '') {
+                return (
+                  <div
+                    key={j}
+                    style={{ gridRow: 9 - j, gridColumn: i + 1 }}
+                    className="aspect-square"
+                  />
+                )
+              }
+
               return (
-                <div
+                <button
                   key={j}
+                  onClick={() => {
+                    // must be [...board] to create a shallow copy, otherwise useState doesn't detect the change
+                    const newBoard = [...board]
+
+                    getTileGroups(board)
+                      .find((tileGroup) =>
+                        tileGroup.some(([i2, j2]) => i2 == i && j2 == j),
+                      )!
+                      .reverse()
+                      .forEach(([i, j]) => {
+                        newBoard[i] = [
+                          ...newBoard[i].slice(0, j),
+                          ...newBoard[i].slice(j + 1),
+                          '',
+                        ]
+                      })
+
+                    setBoard(newBoard)
+                    setStepCount(stepCount + 1)
+                    setHint(undefined)
+                  }}
                   style={{ gridRow: 9 - j, gridColumn: i + 1 }}
-                  className="aspect-square"
-                />
+                  className="relative"
+                >
+                  <Tile tile={tile} />
+                  {hint &&
+                    hint.tileGroup.some(([i2, j2]) => i2 == i && j2 == j) && (
+                      <SquareIcon className="absolute inset-0 h-full w-full text-white" />
+                    )}
+                </button>
               )
-            }
-
-            return (
-              <button
-                key={j}
-                onClick={() => {
-                  // must be [...board] to create a shallow copy, otherwise useState doesn't detect the change
-                  const newBoard = [...board]
-
-                  getTileGroups(board)
-                    .find((tileGroup) =>
-                      tileGroup.some(([i2, j2]) => i2 == i && j2 == j),
-                    )!
-                    .reverse()
-                    .forEach(([i, j]) => {
-                      newBoard[i] = [
-                        ...newBoard[i].slice(0, j),
-                        ...newBoard[i].slice(j + 1),
-                        '',
-                      ]
-                    })
-
-                  setBoard(newBoard)
-                  setStepCount(stepCount + 1)
-                  setHint(undefined)
-                }}
-                style={{ gridRow: 9 - j, gridColumn: i + 1 }}
-                className="relative"
-              >
-                <Tile tile={tile} />
-                {hint &&
-                  hint.tileGroup.some(([i2, j2]) => i2 == i && j2 == j) && (
-                    <SquareIcon className="absolute inset-0 h-full w-full text-white" />
-                  )}
-              </button>
-            )
-          }),
-        )}
+            })}
+          </div>
+        ))}
       </div>
     </div>
   )
