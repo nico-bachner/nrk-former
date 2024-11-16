@@ -4,15 +4,15 @@ import { useState, useTransition } from 'react'
 
 import { BOARDS } from '@/boards'
 import { Board } from '@/components/Board'
+import { Counter } from '@/components/Counter'
 import { useUserRecord } from '@/hooks/useUserRecord'
 import { HintIcon } from '@/icons/Hint'
 import { RestartIcon } from '@/icons/Restart'
 import { getBotTurns } from '@/lib/getBotTurns'
 import { getHint } from '@/lib/getHint'
+import { getNewBoard } from '@/lib/getNewBoard'
 import { getTileGroups } from '@/lib/getTileGroups'
 import { TileGroup } from '@/types'
-
-import { Counter } from './components/Counter'
 
 const BOARD = BOARDS[0].tiles
 
@@ -85,9 +85,6 @@ export const Game: React.FC = () => {
         board={board}
         hint={hint}
         onTileClick={([i, j]) => {
-          // must be a deep copy, otherwise useState doesn't detect the change
-          const newBoard = structuredClone(board)
-
           const tileGroups = getTileGroups(board)
 
           const tileGroup = tileGroups.find(({ tiles }) =>
@@ -95,15 +92,7 @@ export const Game: React.FC = () => {
           )
 
           if (tileGroup) {
-            tileGroup.tiles.forEach(([i, j]) => {
-              newBoard[i][j] = ''
-            })
-
-            newBoard.map((column) =>
-              column.sort((a, b) => (a == '' ? 1 : b == '' ? -1 : 0)),
-            )
-
-            setBoard(newBoard)
+            setBoard(getNewBoard(board, tileGroup))
             setStepCount(stepCount + 1)
             setHint(undefined)
           }
