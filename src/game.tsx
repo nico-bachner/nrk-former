@@ -1,9 +1,10 @@
 'use client'
 
-import { useEffect, useState, useTransition } from 'react'
+import { useState, useTransition } from 'react'
 
 import { BOARDS } from '@/boards'
 import { Board } from '@/components/Board'
+import { useUserRecord } from '@/hooks/useUserRecord'
 import { HintIcon } from '@/icons/Hint'
 import { RestartIcon } from '@/icons/Restart'
 import { getBotTurns } from '@/lib/getBotTurns'
@@ -16,26 +17,17 @@ const BOARD = BOARDS[0].tiles
 export const Game: React.FC = () => {
   const [board, setBoard] = useState(BOARD)
   const [stepCount, setStepCount] = useState(0)
-  const [record, setRecord] = useState<number | undefined>(undefined)
   const [botTurns, setBotTurns] = useState<number | undefined>(undefined)
   const [hint, setHint] = useState<TileGroup | undefined>(undefined)
-
-  useEffect(() => {
-    const record = localStorage.getItem('record')
-
-    if (record) {
-      setRecord(parseInt(record))
-    }
-  }, [])
+  const { userRecord, setUserRecord } = useUserRecord()
+  const [isBotScorePending, startCalculatingBotScore] = useTransition()
 
   if (board.flat().every((tile) => tile == '')) {
-    if (!record || stepCount < record) {
-      setRecord(stepCount)
+    if (!userRecord || stepCount < userRecord) {
+      setUserRecord(stepCount)
       localStorage.setItem('record', stepCount.toString())
     }
   }
-
-  const [isBotScorePending, startCalculatingBotScore] = useTransition()
 
   return (
     <div className="flex flex-col gap-4">
@@ -53,7 +45,7 @@ export const Game: React.FC = () => {
             <p className="font-bold uppercase text-purple-300">Record</p>
 
             <div className="flex h-12 w-16 items-center justify-center rounded bg-purple-900">
-              <p className="text-xl font-bold text-purple-200">{record}</p>
+              <p className="text-xl font-bold text-purple-200">{userRecord}</p>
             </div>
           </div>
 
