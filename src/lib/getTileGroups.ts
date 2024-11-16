@@ -1,92 +1,59 @@
-import { Board, Coordinate } from '@/types'
+import { Board, TileGroup } from '@/types'
 
-export const getTileGroups = (board: Board) => {
-  let tileGroups: Coordinate[][] = []
+export const getTileGroups = (board: Board): TileGroup[] => {
+  let tileGroups: TileGroup[] = []
 
   board
     .map((column) => column.filter((tile) => tile != ''))
     .forEach((column, i) => {
       column.forEach((tile, j) => {
-        if (i > 0 && j > 0) {
-          if (tile == board[i - 1][j] && tile == board[i][j - 1]) {
-            const tileGroup1Index = tileGroups.findIndex((tileGroup) =>
-              tileGroup.some(([i2, j2]) => i2 == i - 1 && j2 == j),
-            )
+        const tileGroupLeft = tileGroups.find(({ tiles }) =>
+          tiles.some(
+            ([i2, j2]) => i2 == i - 1 && j2 == j && tile == board[i2][j2],
+          ),
+        )
 
-            const tileGroup2Index = tileGroups.findIndex((tileGroup) =>
-              tileGroup.some(([i2, j2]) => i2 == i && j2 == j - 1),
-            )
+        const tileGroupBelow = tileGroups.find(({ tiles }) =>
+          tiles.some(
+            ([i2, j2]) => i2 == i && j2 == j - 1 && tile == board[i2][j2],
+          ),
+        )
 
-            const tileGroup1 = tileGroups[tileGroup1Index]
-            const tileGroup2 = tileGroups[tileGroup2Index]
+        if (tileGroupLeft && tileGroupBelow) {
+          tileGroups = tileGroups.filter(
+            ({ id }) => id != tileGroupLeft.id && id != tileGroupBelow.id,
+          )
 
-            tileGroups = [
-              ...tileGroups.slice(0, tileGroup1Index),
-              ...tileGroups.slice(tileGroup1Index + 1),
-            ]
+          tileGroups.push({
+            id: tileGroupLeft.id,
+            tiles: [...tileGroupLeft.tiles, ...tileGroupBelow.tiles, [i, j]],
+            score: tileGroupLeft.score + tileGroupBelow.score + 1,
+          })
+        } else if (tileGroupLeft) {
+          tileGroups = tileGroups.filter(({ id }) => id != tileGroupLeft.id)
 
-            tileGroups = [
-              ...tileGroups.slice(0, tileGroup2Index),
-              [...tileGroup1, ...tileGroup2, [i, j]],
-              ...tileGroups.slice(tileGroup2Index + 1),
-            ]
-          } else if (tile == board[i - 1][j]) {
-            tileGroups.forEach((tileGroup) => {
-              tileGroup.forEach(([i2, j2]) => {
-                if (i2 == i - 1 && j2 == j) {
-                  tileGroup.push([i, j])
-                }
-              })
-            })
-          } else if (tile == board[i][j - 1]) {
-            tileGroups.forEach((tileGroup) => {
-              tileGroup.forEach(([i2, j2]) => {
-                if (i2 == i && j2 == j - 1) {
-                  tileGroup.push([i, j])
-                }
-              })
-            })
-          } else {
-            tileGroups.push([[i, j]])
-          }
-        } else if (i > 0) {
-          if (tile == board[i - 1][j]) {
-            tileGroups.forEach((tileGroup) => {
-              tileGroup.forEach(([i2, j2]) => {
-                if (i2 == i - 1 && j2 == j) {
-                  tileGroup.push([i, j])
-                }
-              })
-            })
-          } else {
-            tileGroups.push([[i, j]])
-          }
-        } else if (j > 0) {
-          if (tile == board[i][j - 1]) {
-            tileGroups.forEach((tileGroup) => {
-              tileGroup.forEach(([i2, j2]) => {
-                if (i2 == i && j2 == j - 1) {
-                  tileGroup.push([i, j])
-                }
-              })
-            })
-          } else {
-            tileGroups.push([[i, j]])
-          }
+          tileGroups.push({
+            id: tileGroupLeft.id,
+            tiles: [...tileGroupLeft.tiles, [i, j]],
+            score: tileGroupLeft.score + 1,
+          })
+        } else if (tileGroupBelow) {
+          tileGroups = tileGroups.filter(({ id }) => id != tileGroupBelow.id)
+
+          tileGroups.push({
+            id: tileGroupBelow.id,
+            tiles: [...tileGroupBelow.tiles, [i, j]],
+            score: tileGroupBelow.score + 1,
+          })
         } else {
-          tileGroups.push([[i, j]])
+          tileGroups.push({
+            id: crypto.randomUUID(),
+            tiles: [[i, j]],
+            score: 1,
+          })
         }
       })
     })
 
-  // deduplicate - ideally this shouldn't be necessary once the above logic is correct
-  return tileGroups.map((tileGroup) =>
-    tileGroup.reduce<Coordinate[]>((previous, current) => {
-      if (!previous.some(([i, j]) => current[0] == i && current[1] == j)) {
-        previous.push(current)
-      }
-
-      return previous
-    }, []),
-  )
+  return tileGroups
 }

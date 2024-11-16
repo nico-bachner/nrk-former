@@ -9,7 +9,7 @@ import { RestartIcon } from '@/icons/Restart'
 import { SquareIcon } from '@/icons/Square'
 import { getHint } from '@/lib/getHint'
 import { getTileGroups } from '@/lib/getTileGroups'
-import { Hint } from '@/types'
+import { TileGroup } from '@/types'
 
 const BOARD = BOARDS[1]
 
@@ -17,7 +17,7 @@ export const Game: React.FC = () => {
   const [board, setBoard] = useState(BOARD)
   const [stepCount, setStepCount] = useState(0)
   const [record, setRecord] = useState<number | undefined>(undefined)
-  const [hint, setHint] = useState<Hint | undefined>(undefined)
+  const [hint, setHint] = useState<TileGroup | undefined>(undefined)
 
   useEffect(() => {
     const record = localStorage.getItem('record')
@@ -107,33 +107,36 @@ export const Game: React.FC = () => {
               return (
                 <button
                   key={j}
-                  onClick={() => {
+                  onClick={async () => {
                     // must be [...board] to create a shallow copy, otherwise useState doesn't detect the change
                     const newBoard = [...board]
 
-                    getTileGroups(board)
-                      .find((tileGroup) =>
-                        tileGroup.some(([i2, j2]) => i2 == i && j2 == j),
-                      )!
-                      .reverse()
-                      .forEach(([i, j]) => {
-                        newBoard[i] = [
-                          ...newBoard[i].slice(0, j),
-                          ...newBoard[i].slice(j + 1),
-                          '',
-                        ]
+                    const tileGroups = getTileGroups(board)
+
+                    const tileGroup = tileGroups.find(({ tiles }) =>
+                      tiles.some(([i2, j2]) => i2 == i && j2 == j),
+                    )
+
+                    if (tileGroup) {
+                      tileGroup.tiles.forEach(([i, j]) => {
+                        newBoard[i][j] = ''
                       })
 
-                    setBoard(newBoard)
-                    setStepCount(stepCount + 1)
-                    setHint(undefined)
+                      newBoard.map((column) =>
+                        column.sort((a, b) => (a == '' ? 1 : b == '' ? -1 : 0)),
+                      )
+
+                      setBoard(newBoard)
+                      setStepCount(stepCount + 1)
+                      setHint(undefined)
+                    }
                   }}
                   style={{ gridRow: 9 - j, gridColumn: i + 1 }}
                   className="relative"
                 >
                   <Tile tile={tile} />
                   {hint &&
-                    hint.tileGroup.some(([i2, j2]) => i2 == i && j2 == j) && (
+                    hint.tiles.some(([i2, j2]) => i2 == i && j2 == j) && (
                       <SquareIcon className="absolute inset-0 h-full w-full text-white" />
                     )}
                 </button>
