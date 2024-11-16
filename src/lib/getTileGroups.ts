@@ -1,5 +1,11 @@
 import { Board, TileGroup } from '@/types'
 
+/**
+ * Finds all the tile groups currently on the board
+ *
+ * @param board The current board state
+ * @returns All the tile groups on the board
+ */
 export const getTileGroups = (board: Board): TileGroup[] => {
   let tileGroups: TileGroup[] = []
 

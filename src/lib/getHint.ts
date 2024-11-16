@@ -1,9 +1,15 @@
-import { TileGroup } from '@/types'
+import { Board, TileGroup } from '@/types'
 
 import { getNewBoard } from './getNewBoard'
 import { getTileGroups } from './getTileGroups'
 
-export const getHint = (board: string[][], depth = 3): TileGroup => {
+/**
+ * Calculates the "best" (WIP) move for the player
+ *
+ * @param board The current board
+ * @returns The collection of tiles to pop
+ */
+export const getHint = (board: Board, depth = 3): TileGroup => {
   const tileGroups = getTileGroups(board)
 
   if (depth == 0 || tileGroups.length == 1) {
