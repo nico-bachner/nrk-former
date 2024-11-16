@@ -11,7 +11,7 @@ import { getHint } from '@/lib/getHint'
 import { getTileGroups } from '@/lib/getTileGroups'
 import { TileGroup } from '@/types'
 
-const BOARD = BOARDS[1]
+const BOARD = BOARDS[0].tiles
 
 export const Game: React.FC = () => {
   const [board, setBoard] = useState(BOARD)
@@ -32,6 +32,12 @@ export const Game: React.FC = () => {
       setRecord(stepCount)
       localStorage.setItem('record', stepCount.toString())
     }
+
+    return (
+      <div className="flex items-center justify-center">
+        <p className="text-3xl font-bold text-purple-300">You win!</p>
+      </div>
+    )
   }
 
   return (
