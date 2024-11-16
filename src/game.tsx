@@ -12,6 +12,8 @@ import { getHint } from '@/lib/getHint'
 import { getTileGroups } from '@/lib/getTileGroups'
 import { TileGroup } from '@/types'
 
+import { Counter } from './components/Counter'
+
 const BOARD = BOARDS[0].tiles
 
 export const Game: React.FC = () => {
@@ -33,40 +35,19 @@ export const Game: React.FC = () => {
     <div className="flex flex-col gap-4">
       <div className="flex justify-between gap-4">
         <div className="flex gap-4">
-          <div className="flex flex-col items-center gap-2">
-            <p className="font-bold uppercase text-purple-300">Turns</p>
-
-            <div className="flex h-12 w-16 items-center justify-center rounded bg-purple-900">
-              <p className="text-xl font-bold text-purple-200">{stepCount}</p>
-            </div>
-          </div>
-
-          <div className="flex flex-col items-center gap-2">
-            <p className="font-bold uppercase text-purple-300">Record</p>
-
-            <div className="flex h-12 w-16 items-center justify-center rounded bg-purple-900">
-              <p className="text-xl font-bold text-purple-200">{userRecord}</p>
-            </div>
-          </div>
-
-          <div className="flex flex-col items-center gap-2">
-            <p className="font-bold uppercase text-purple-300">Bot</p>
-
+          <Counter label="Turns">{stepCount}</Counter>
+          <Counter label="Record">{userRecord}</Counter>
+          <Counter label="Bot">
             <button
               onClick={() => {
                 startCalculatingBotScore(() => {
                   setBotTurns(getBotTurns(BOARD))
                 })
               }}
-              className="flex h-12 w-16 items-center justify-center rounded bg-purple-900"
             >
-              {isBotScorePending ? (
-                <p className="text-xl font-bold text-purple-200">...</p>
-              ) : (
-                <p className="text-xl font-bold text-purple-200">{botTurns}</p>
-              )}
+              {isBotScorePending ? '...' : botTurns}
             </button>
-          </div>
+          </Counter>
         </div>
 
         <div className="flex gap-4">
