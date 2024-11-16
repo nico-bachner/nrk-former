@@ -2,12 +2,10 @@ import { TileGroup } from '@/types'
 
 import { getTileGroups } from './getTileGroups'
 
-export const getHint = (board: string[][], depth: number): TileGroup => {
+export const getHint = (board: string[][], depth = 3): TileGroup => {
   const tileGroups = getTileGroups(board)
 
-  console.log('depth', depth)
-
-  if (depth > 0) {
+  if (depth > 0 && tileGroups.length > 1) {
     return tileGroups
       .map(({ id, tiles, score }) => {
         const newBoard = structuredClone(board)

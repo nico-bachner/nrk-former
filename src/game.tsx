@@ -61,11 +61,7 @@ export const Game: React.FC = () => {
 
             <button
               onClick={() => {
-                const movesLeft = board
-                  .flat()
-                  .filter((tile) => tile != '').length
-                const hint = getHint(board, Math.min(1, movesLeft - 1))
-                setHint(hint)
+                setHint(getHint(board))
               }}
               className="flex size-12 items-center justify-center rounded-full bg-purple-700"
             >
