@@ -2,6 +2,7 @@ import { Board, TileGroup } from '@/types'
 
 import { getNewBoard } from './getNewBoard'
 import { getTileGroups } from './getTileGroups'
+import { addScores, decrementScore } from './scoreManipulations'
 
 /**
  * Calculates the "best" (WIP) move for the player
@@ -42,12 +43,19 @@ export const getHint = (
       return {
         id,
         tiles,
-        score: score + getHint(newBoard, cache, depth - 1).score / 2,
+        score: addScores(
+          score * depth,
+          decrementScore(getHint(newBoard, cache, depth - 1).score),
+        ),
       }
     })
     .sort((a, b) => b.score - a.score)[0]
 
   cache[JSON.stringify(board)] = bestNextMove
+
+  if (depth >= 2) {
+    console.log('bestNextMove', bestNextMove)
+  }
 
   return bestNextMove
 }

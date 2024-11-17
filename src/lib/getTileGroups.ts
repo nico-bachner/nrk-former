@@ -1,5 +1,7 @@
 import { Board, TileGroup } from '@/types'
 
+import { addScores, incrementScore } from './scoreManipulations'
+
 /**
  * Finds all the tile groups currently on the board
  *
@@ -25,7 +27,11 @@ export const getTileGroups = (board: Board): TileGroup[] => {
           ),
         )
 
-        if (tileGroupLeft && tileGroupBelow) {
+        if (
+          tileGroupLeft &&
+          tileGroupBelow &&
+          tileGroupLeft.id != tileGroupBelow.id
+        ) {
           tileGroups = tileGroups.filter(
             ({ id }) => id != tileGroupLeft.id && id != tileGroupBelow.id,
           )
@@ -33,11 +39,9 @@ export const getTileGroups = (board: Board): TileGroup[] => {
           tileGroups.push({
             id: tileGroupLeft.id,
             tiles: [...tileGroupLeft.tiles, ...tileGroupBelow.tiles, [i, j]],
-            score:
-              2 ^
-              (Math.log2(tileGroupLeft.score) +
-                Math.log2(tileGroupBelow.score) +
-                1),
+            score: incrementScore(
+              addScores(tileGroupLeft.score, tileGroupBelow.score),
+            ),
           })
         } else if (tileGroupLeft) {
           tileGroups = tileGroups.filter(({ id }) => id != tileGroupLeft.id)
@@ -45,7 +49,7 @@ export const getTileGroups = (board: Board): TileGroup[] => {
           tileGroups.push({
             id: tileGroupLeft.id,
             tiles: [...tileGroupLeft.tiles, [i, j]],
-            score: tileGroupLeft.score * 2,
+            score: incrementScore(tileGroupLeft.score),
           })
         } else if (tileGroupBelow) {
           tileGroups = tileGroups.filter(({ id }) => id != tileGroupBelow.id)
@@ -53,13 +57,13 @@ export const getTileGroups = (board: Board): TileGroup[] => {
           tileGroups.push({
             id: tileGroupBelow.id,
             tiles: [...tileGroupBelow.tiles, [i, j]],
-            score: tileGroupBelow.score * 2,
+            score: incrementScore(tileGroupBelow.score),
           })
         } else {
           tileGroups.push({
             id: crypto.randomUUID(),
             tiles: [[i, j]],
-            score: 1,
+            score: incrementScore(),
           })
         }
       })
