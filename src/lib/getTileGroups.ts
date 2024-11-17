@@ -33,7 +33,11 @@ export const getTileGroups = (board: Board): TileGroup[] => {
           tileGroups.push({
             id: tileGroupLeft.id,
             tiles: [...tileGroupLeft.tiles, ...tileGroupBelow.tiles, [i, j]],
-            score: tileGroupLeft.score + tileGroupBelow.score + 1,
+            score:
+              2 ^
+              (Math.log2(tileGroupLeft.score) +
+                Math.log2(tileGroupBelow.score) +
+                1),
           })
         } else if (tileGroupLeft) {
           tileGroups = tileGroups.filter(({ id }) => id != tileGroupLeft.id)
@@ -41,7 +45,7 @@ export const getTileGroups = (board: Board): TileGroup[] => {
           tileGroups.push({
             id: tileGroupLeft.id,
             tiles: [...tileGroupLeft.tiles, [i, j]],
-            score: tileGroupLeft.score + 1,
+            score: tileGroupLeft.score * 2,
           })
         } else if (tileGroupBelow) {
           tileGroups = tileGroups.filter(({ id }) => id != tileGroupBelow.id)
@@ -49,7 +53,7 @@ export const getTileGroups = (board: Board): TileGroup[] => {
           tileGroups.push({
             id: tileGroupBelow.id,
             tiles: [...tileGroupBelow.tiles, [i, j]],
-            score: tileGroupBelow.score + 1,
+            score: tileGroupBelow.score * 2,
           })
         } else {
           tileGroups.push({
