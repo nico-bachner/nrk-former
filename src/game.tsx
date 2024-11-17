@@ -45,7 +45,7 @@ export const Game: React.FC = () => {
                 })
               }}
             >
-              {isBotScorePending ? '...' : botTurns}
+              {isBotScorePending ? '...' : (botTurns ?? 'Show')}
             </button>
           </Counter>
         </div>
