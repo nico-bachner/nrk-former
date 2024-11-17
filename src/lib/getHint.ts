@@ -34,7 +34,7 @@ export const getHint = (board: Board, depth = 3): TileGroup => {
       return {
         id,
         tiles,
-        score: score + getHint(newBoard, depth - 1).score,
+        score: score + getHint(newBoard, depth - 1).score / 2,
       }
     })
     .sort((a, b) => b.score - a.score)[0]
