@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { useState } from 'react'
 
 import { BOARDS } from '@/boards'
 import { Board } from '@/components/Board'
@@ -12,11 +13,16 @@ import { getNewBoard } from '@/lib/getNewBoard'
 import { getTileGroups } from '@/lib/getTileGroups'
 import { GameState } from '@/types/game'
 
-const BOARD = BOARDS[0].tiles
-
 export const Game: React.FC = () => {
+  const searchParams = useSearchParams()
+  const date = decodeURIComponent(
+    searchParams.get('date') ??
+      new Date(Date.now()).toISOString().split('T')[0],
+  )
+  const boardOfTheDay = BOARDS.find((b) => b.date == date) ?? BOARDS[0]
+
   const [gameState, setGameState] = useState<GameState>({
-    boardHistory: [BOARD],
+    boardHistory: [boardOfTheDay.tiles],
     stepCount: 0,
     hint: undefined,
   })
@@ -44,7 +50,7 @@ export const Game: React.FC = () => {
           <Counter label="Bot">
             <button
               onClick={() => {
-                setBotTurns(getBotTurns(BOARD))
+                setBotTurns(getBotTurns(boardOfTheDay.tiles))
               }}
             >
               {botTurns ?? 'Show'}
