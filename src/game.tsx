@@ -8,7 +8,7 @@ import { Button } from '@/components/Button'
 import { Counter } from '@/components/Counter'
 import { useUserRecord } from '@/hooks/useUserRecord'
 import { HintIcon } from '@/icons/Hint'
-import { RestartIcon } from '@/icons/Restart'
+import { UndoIcon } from '@/icons/Undo'
 import { getBotTurns } from '@/lib/getBotTurns'
 import { getHint } from '@/lib/getHint'
 import { getNewBoard } from '@/lib/getNewBoard'
@@ -18,12 +18,14 @@ import { TileGroup } from '@/types/game'
 const BOARD = BOARDS[0].tiles
 
 export const Game: React.FC = () => {
-  const [board, setBoard] = useState(BOARD)
+  const [boardHistory, setBoardHistory] = useState([BOARD])
   const [stepCount, setStepCount] = useState(0)
   const [botTurns, setBotTurns] = useState<number | undefined>(undefined)
   const [hint, setHint] = useState<TileGroup | undefined>(undefined)
   const { userRecord, setUserRecord } = useUserRecord()
   const [isBotScorePending, startCalculatingBotScore] = useTransition()
+
+  const board = boardHistory[0]
 
   if (board.flat().every((tile) => tile == '')) {
     if (!userRecord || stepCount < userRecord) {
@@ -61,12 +63,14 @@ export const Game: React.FC = () => {
           />
 
           <Button
-            label="Restart"
-            icon={RestartIcon}
+            label="Undo"
+            icon={UndoIcon}
             onClick={() => {
-              setBoard(BOARD)
-              setStepCount(0)
-              setHint(undefined)
+              if (boardHistory.length > 1) {
+                setBoardHistory(boardHistory.slice(1))
+                setStepCount(stepCount - 1)
+                setHint(undefined)
+              }
             }}
           />
         </div>
@@ -83,7 +87,10 @@ export const Game: React.FC = () => {
           )
 
           if (tileGroup) {
-            setBoard(getNewBoard(board, tileGroup.tiles))
+            setBoardHistory([
+              getNewBoard(board, tileGroup.tiles),
+              ...boardHistory,
+            ])
             setStepCount(stepCount + 1)
             setHint(undefined)
           }
