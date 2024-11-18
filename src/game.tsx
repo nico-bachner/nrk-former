@@ -15,6 +15,8 @@ import { getNewBoard } from '@/lib/getNewBoard'
 import { getTileGroups } from '@/lib/getTileGroups'
 import { TileGroup } from '@/types/game'
 
+import { RestartIcon } from './icons/Restart'
+
 const BOARD = BOARDS[0].tiles
 
 export const Game: React.FC = () => {
@@ -71,6 +73,16 @@ export const Game: React.FC = () => {
                 setStepCount(stepCount - 1)
                 setHint(undefined)
               }
+            }}
+          />
+
+          <Button
+            label="Restart"
+            icon={RestartIcon}
+            onClick={() => {
+              setBoardHistory(boardHistory.slice(boardHistory.length - 1))
+              setStepCount(0)
+              setHint(undefined)
             }}
           />
         </div>
