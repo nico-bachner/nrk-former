@@ -6,7 +6,7 @@ export type TileGroup = {
   score: number
 }
 export type Hint = {
-  turns: TileGroup[]
+  moves: TileGroup[]
   score: number
 }
 export type IconProps = React.SVGProps<SVGSVGElement>

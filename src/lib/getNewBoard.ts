@@ -7,10 +7,10 @@ import { Board, TileGroup } from '@/types'
  * @param tileGroup The tile group being popped
  * @returns The new board after the player's turn
  */
-export const getNewBoard = (board: Board, tileGroup: TileGroup): Board => {
+export const getNewBoard = (board: Board, tiles: TileGroup['tiles']): Board => {
   const newBoard = structuredClone(board)
 
-  tileGroup.tiles.forEach(([i, j]) => {
+  tiles.forEach(([i, j]) => {
     newBoard[i][j] = ''
   })
 

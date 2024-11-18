@@ -1,4 +1,4 @@
-import { Board, Hint, TileGroup } from '@/types'
+import { Board, Hint } from '@/types'
 
 import { getNewBoard } from './getNewBoard'
 import { getTileGroups } from './getTileGroups'
@@ -25,7 +25,7 @@ export const getHint = (
     const bestNextMove = tileGroups.sort((a, b) => b.score - a.score)[0]
 
     const hint = {
-      turns: [bestNextMove],
+      moves: [bestNextMove],
       score: bestNextMove.score,
     }
 
@@ -43,12 +43,12 @@ export const getHint = (
         tiles.some(([i2, j2]) => i2 == i && j2 == j),
       )!
 
-      const newBoard = getNewBoard(board, tileGroup)
+      const newBoard = getNewBoard(board, tileGroup.tiles)
 
       const hint = getHint(newBoard, cache, depth - 1)
 
       return {
-        turns: [tileGroup, ...hint.turns],
+        moves: [tileGroup, ...hint.moves],
         score: addScores(score * depth, decrementScore(hint.score)),
       }
     })

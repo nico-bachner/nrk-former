@@ -56,7 +56,7 @@ export const Game: React.FC = () => {
 
             <button
               onClick={() => {
-                setHint(getHint(board).turns[0])
+                setHint(getHint(board).moves[0])
               }}
               className="flex size-12 items-center justify-center rounded-full bg-purple-700"
             >
@@ -92,7 +92,7 @@ export const Game: React.FC = () => {
           )
 
           if (tileGroup) {
-            setBoard(getNewBoard(board, tileGroup))
+            setBoard(getNewBoard(board, tileGroup.tiles))
             setStepCount(stepCount + 1)
             setHint(undefined)
           }
