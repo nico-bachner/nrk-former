@@ -21,19 +21,14 @@ export const Game: React.FC = () => {
     hint: undefined,
   })
 
+  const [botTurns, setBotTurns] = useState<number | undefined>(undefined)
+
   const { userRecord, setUserRecord } = useUserRecord()
 
-  const [botTurns, setBotTurns] = useState<number | undefined>(undefined)
-  const [isBotScorePending, startCalculatingBotScore] = useTransition()
-
-  const { boardHistory, stepCount, hint } = gameState
-
-  const board = boardHistory[0]
-
-  if (board.flat().every((tile) => tile == '')) {
-    if (!userRecord || stepCount < userRecord) {
-      setUserRecord(stepCount)
-      localStorage.setItem('record', stepCount.toString())
+  if (gameState.boardHistory[0].flat().every((tile) => tile == '')) {
+    if (!userRecord || gameState.stepCount < userRecord) {
+      setUserRecord(gameState.stepCount)
+      localStorage.setItem('record', gameState.stepCount.toString())
     }
   }
 
@@ -42,28 +37,26 @@ export const Game: React.FC = () => {
       <div className="mx-auto flex max-w-screen-sm flex-col sm:flex-row sm:gap-2">
         <div className="flex h-min justify-between gap-4 bg-violet-900 p-3 sm:flex-col sm:rounded-lg">
           <div className="flex gap-4 sm:flex-col">
-            <Counter label="Turns">{stepCount}</Counter>
+            <Counter label="Turns">{gameState.stepCount}</Counter>
             <Counter label="Record">{userRecord}</Counter>
           </div>
 
           <Counter label="Bot">
             <button
               onClick={() => {
-                startCalculatingBotScore(() => {
-                  setBotTurns(getBotTurns(BOARD))
-                })
+                setBotTurns(getBotTurns(BOARD))
               }}
             >
-              {isBotScorePending ? '...' : (botTurns ?? 'Show')}
+              {botTurns ?? 'Show'}
             </button>
           </Counter>
         </div>
 
         <Board
-          board={board}
-          hint={hint}
+          board={gameState.boardHistory[0]}
+          hint={gameState.hint}
           onTileClick={([i, j]) => {
-            const tileGroups = getTileGroups(board)
+            const tileGroups = getTileGroups(gameState.boardHistory[0])
 
             const tileGroup = tileGroups.find(({ tiles }) =>
               tiles.some(([i2, j2]) => i2 == i && j2 == j),
@@ -72,10 +65,10 @@ export const Game: React.FC = () => {
             if (tileGroup) {
               setGameState({
                 boardHistory: [
-                  getNewBoard(board, tileGroup.tiles),
-                  ...boardHistory,
+                  getNewBoard(gameState.boardHistory[0], tileGroup.tiles),
+                  ...gameState.boardHistory,
                 ],
-                stepCount: stepCount + 1,
+                stepCount: gameState.stepCount + 1,
                 hint: undefined,
               })
             }
