@@ -4,28 +4,29 @@ import { useState, useTransition } from 'react'
 
 import { BOARDS } from '@/boards'
 import { Board } from '@/components/Board'
-import { Button } from '@/components/Button'
 import { Controls } from '@/components/Controls'
 import { Counter } from '@/components/Counter'
 import { useUserRecord } from '@/hooks/useUserRecord'
-import { HintIcon } from '@/icons/Hint'
-import { RestartIcon } from '@/icons/Restart'
-import { UndoIcon } from '@/icons/Undo'
 import { getBotTurns } from '@/lib/getBotTurns'
-import { getHint } from '@/lib/getHint'
 import { getNewBoard } from '@/lib/getNewBoard'
 import { getTileGroups } from '@/lib/getTileGroups'
-import { TileGroup } from '@/types/game'
+import { GameState } from '@/types/game'
 
 const BOARD = BOARDS[0].tiles
 
 export const Game: React.FC = () => {
-  const [boardHistory, setBoardHistory] = useState([BOARD])
-  const [stepCount, setStepCount] = useState(0)
-  const [botTurns, setBotTurns] = useState<number | undefined>(undefined)
-  const [hint, setHint] = useState<TileGroup | undefined>(undefined)
+  const [gameState, setGameState] = useState<GameState>({
+    boardHistory: [BOARD],
+    stepCount: 0,
+    hint: undefined,
+  })
+
   const { userRecord, setUserRecord } = useUserRecord()
+
+  const [botTurns, setBotTurns] = useState<number | undefined>(undefined)
   const [isBotScorePending, startCalculatingBotScore] = useTransition()
+
+  const { boardHistory, stepCount, hint } = gameState
 
   const board = boardHistory[0]
 
@@ -69,50 +70,26 @@ export const Game: React.FC = () => {
             )
 
             if (tileGroup) {
-              setBoardHistory([
-                getNewBoard(board, tileGroup.tiles),
-                ...boardHistory,
-              ])
-              setStepCount(stepCount + 1)
-              setHint(undefined)
+              setGameState({
+                boardHistory: [
+                  getNewBoard(board, tileGroup.tiles),
+                  ...boardHistory,
+                ],
+                stepCount: stepCount + 1,
+                hint: undefined,
+              })
             }
           }}
           className="flex-1 p-2"
         />
 
-        <div className="sticky bottom-0">
-          <Controls className="mx-auto flex w-min gap-4 sm:flex-col">
-            <div className="flex gap-4 sm:flex-col">
-              <Button
-                label="Restart"
-                icon={RestartIcon}
-                onClick={() => {
-                  setBoardHistory(boardHistory.slice(boardHistory.length - 1))
-                  setStepCount(0)
-                  setHint(undefined)
-                }}
-              />
-              <Button
-                label="Undo"
-                icon={UndoIcon}
-                onClick={() => {
-                  if (boardHistory.length > 1) {
-                    setBoardHistory(boardHistory.slice(1))
-                    setStepCount(stepCount - 1)
-                    setHint(undefined)
-                  }
-                }}
-              />
-            </div>
-
-            <Button
-              label="Hint"
-              icon={HintIcon}
-              onClick={() => {
-                setHint(getHint(board).moves[0])
-              }}
-            />
-          </Controls>
+        <div className="sticky bottom-0 mx-auto w-min">
+          <Controls
+            gameState={gameState}
+            onGameStateChange={(gameState) => {
+              setGameState(gameState)
+            }}
+          />
         </div>
       </div>
     </div>
