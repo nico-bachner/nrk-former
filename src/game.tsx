@@ -5,17 +5,17 @@ import { useState, useTransition } from 'react'
 import { BOARDS } from '@/boards'
 import { Board } from '@/components/Board'
 import { Button } from '@/components/Button'
+import { Controls } from '@/components/Controls'
 import { Counter } from '@/components/Counter'
 import { useUserRecord } from '@/hooks/useUserRecord'
 import { HintIcon } from '@/icons/Hint'
+import { RestartIcon } from '@/icons/Restart'
 import { UndoIcon } from '@/icons/Undo'
 import { getBotTurns } from '@/lib/getBotTurns'
 import { getHint } from '@/lib/getHint'
 import { getNewBoard } from '@/lib/getNewBoard'
 import { getTileGroups } from '@/lib/getTileGroups'
 import { TileGroup } from '@/types/game'
-
-import { RestartIcon } from './icons/Restart'
 
 const BOARD = BOARDS[0].tiles
 
@@ -37,11 +37,14 @@ export const Game: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex justify-between gap-4">
-        <div className="flex gap-4">
-          <Counter label="Turns">{stepCount}</Counter>
-          <Counter label="Record">{userRecord}</Counter>
+    <div className="sm:px-4 sm:py-8">
+      <div className="mx-auto flex max-w-screen-sm flex-col sm:flex-row sm:gap-2">
+        <div className="flex h-min justify-between gap-4 bg-violet-900 p-3 sm:flex-col sm:rounded-lg">
+          <div className="flex gap-4 sm:flex-col">
+            <Counter label="Turns">{stepCount}</Counter>
+            <Counter label="Record">{userRecord}</Counter>
+          </div>
+
           <Counter label="Bot">
             <button
               onClick={() => {
@@ -55,59 +58,63 @@ export const Game: React.FC = () => {
           </Counter>
         </div>
 
-        <div className="flex gap-4">
-          <Button
-            label="Hint"
-            icon={HintIcon}
-            onClick={() => {
-              setHint(getHint(board).moves[0])
-            }}
-          />
+        <Board
+          board={board}
+          hint={hint}
+          onTileClick={([i, j]) => {
+            const tileGroups = getTileGroups(board)
 
-          <Button
-            label="Undo"
-            icon={UndoIcon}
-            onClick={() => {
-              if (boardHistory.length > 1) {
-                setBoardHistory(boardHistory.slice(1))
-                setStepCount(stepCount - 1)
-                setHint(undefined)
-              }
-            }}
-          />
+            const tileGroup = tileGroups.find(({ tiles }) =>
+              tiles.some(([i2, j2]) => i2 == i && j2 == j),
+            )
 
-          <Button
-            label="Restart"
-            icon={RestartIcon}
-            onClick={() => {
-              setBoardHistory(boardHistory.slice(boardHistory.length - 1))
-              setStepCount(0)
+            if (tileGroup) {
+              setBoardHistory([
+                getNewBoard(board, tileGroup.tiles),
+                ...boardHistory,
+              ])
+              setStepCount(stepCount + 1)
               setHint(undefined)
-            }}
-          />
+            }
+          }}
+          className="flex-1 p-2"
+        />
+
+        <div className="sticky bottom-0">
+          <Controls className="mx-auto flex w-min gap-4 sm:flex-col">
+            <div className="flex gap-4 sm:flex-col">
+              <Button
+                label="Restart"
+                icon={RestartIcon}
+                onClick={() => {
+                  setBoardHistory(boardHistory.slice(boardHistory.length - 1))
+                  setStepCount(0)
+                  setHint(undefined)
+                }}
+              />
+              <Button
+                label="Undo"
+                icon={UndoIcon}
+                onClick={() => {
+                  if (boardHistory.length > 1) {
+                    setBoardHistory(boardHistory.slice(1))
+                    setStepCount(stepCount - 1)
+                    setHint(undefined)
+                  }
+                }}
+              />
+            </div>
+
+            <Button
+              label="Hint"
+              icon={HintIcon}
+              onClick={() => {
+                setHint(getHint(board).moves[0])
+              }}
+            />
+          </Controls>
         </div>
       </div>
-
-      <Board
-        board={board}
-        hint={hint}
-        onTileClick={([i, j]) => {
-          const tileGroups = getTileGroups(board)
-
-          const tileGroup = tileGroups.find(({ tiles }) =>
-            tiles.some(([i2, j2]) => i2 == i && j2 == j),
-          )
-
-          if (tileGroup) {
-            setBoardHistory([
-              getNewBoard(board, tileGroup.tiles),
-              ...boardHistory,
-            ])
-            setStepCount(stepCount + 1)
-            setHint(undefined)
-          }
-        }}
-      />
     </div>
   )
 }

@@ -1,15 +1,22 @@
 import { Tile } from '@/components/Tile'
 import { SquareIcon } from '@/icons/Square'
 import { Coordinate, TileGroup } from '@/types/game'
+import { cn } from '@/utils/cn'
 
 type BoardProps = {
   board: string[][]
   hint?: TileGroup
   onTileClick: (coordinate: Coordinate) => void
+  className?: string
 }
 
-export const Board: React.FC<BoardProps> = ({ board, hint, onTileClick }) => (
-  <div className="flex">
+export const Board: React.FC<BoardProps> = ({
+  board,
+  hint,
+  onTileClick,
+  className,
+}) => (
+  <div className={cn('flex', className)}>
     {board.map((column, i) => (
       <div key={i} className="flex flex-1 flex-col-reverse">
         {column.map((tile, j) => {

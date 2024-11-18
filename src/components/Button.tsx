@@ -11,14 +11,10 @@ export const Button: React.FC<ButtonProps> = ({
   icon: Icon,
   onClick,
 }) => (
-  <div className="flex flex-col items-center gap-2">
-    <p className="font-bold uppercase text-purple-300">{label}</p>
-
-    <button
-      onClick={onClick}
-      className="flex size-12 items-center justify-center rounded-full bg-purple-700"
-    >
-      <Icon className="text-purple-100" />
-    </button>
-  </div>
+  <button
+    onClick={onClick}
+    className="flex size-12 items-center justify-center rounded-full bg-violet-700"
+  >
+    <Icon className="text-violet-100" aria-label={label} />
+  </button>
 )

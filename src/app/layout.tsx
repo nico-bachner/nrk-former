@@ -13,7 +13,7 @@ type LayoutProps = {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => (
   <html lang="en">
-    <body className="bg-[#18052E] antialiased">{children}</body>
+    <body className="bg-violet-950 antialiased">{children}</body>
   </html>
 )
 
