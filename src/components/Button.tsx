@@ -15,6 +15,6 @@ export const Button: React.FC<ButtonProps> = ({
     onClick={onClick}
     className="flex size-12 items-center justify-center rounded-full bg-violet-700"
   >
-    <Icon className="text-violet-100" aria-label={label} />
+    <Icon className="stroke-violet-100" aria-label={label} />
   </button>
 )
