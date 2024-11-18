@@ -1,4 +1,4 @@
-import { Board, TileGroup } from '@/types'
+import { Board, Hint, TileGroup } from '@/types'
 
 import { getNewBoard } from './getNewBoard'
 import { getTileGroups } from './getTileGroups'
@@ -12,9 +12,9 @@ import { addScores, decrementScore } from './scoreManipulations'
  */
 export const getHint = (
   board: Board,
-  cache: { [key: string]: TileGroup } = {},
+  cache: { [key: string]: Hint } = {},
   depth = 3,
-): TileGroup => {
+): Hint => {
   if (Object.keys(cache).includes(JSON.stringify(board))) {
     return cache[JSON.stringify(board)]
   }
@@ -24,13 +24,18 @@ export const getHint = (
   if (depth == 0 || tileGroups.length == 1) {
     const bestNextMove = tileGroups.sort((a, b) => b.score - a.score)[0]
 
-    cache[JSON.stringify(board)] = bestNextMove
+    const hint = {
+      turns: [bestNextMove],
+      score: bestNextMove.score,
+    }
 
-    return bestNextMove
+    cache[JSON.stringify(board)] = hint
+
+    return hint
   }
 
-  const bestNextMove = tileGroups
-    .map(({ id, tiles, score }) => {
+  const hint: Hint = tileGroups
+    .map(({ tiles, score }) => {
       const i = tiles[0][0]
       const j = tiles[0][1]
 
@@ -40,22 +45,20 @@ export const getHint = (
 
       const newBoard = getNewBoard(board, tileGroup)
 
+      const hint = getHint(newBoard, cache, depth - 1)
+
       return {
-        id,
-        tiles,
-        score: addScores(
-          score * depth,
-          decrementScore(getHint(newBoard, cache, depth - 1).score),
-        ),
+        turns: [tileGroup, ...hint.turns],
+        score: addScores(score * depth, decrementScore(hint.score)),
       }
     })
     .sort((a, b) => b.score - a.score)[0]
 
-  cache[JSON.stringify(board)] = bestNextMove
+  cache[JSON.stringify(board)] = hint
 
   if (depth >= 2) {
-    console.log('bestNextMove', bestNextMove)
+    console.log('hint', hint)
   }
 
-  return bestNextMove
+  return hint
 }

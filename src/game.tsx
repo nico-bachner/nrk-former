@@ -56,7 +56,7 @@ export const Game: React.FC = () => {
 
             <button
               onClick={() => {
-                setHint(getHint(board))
+                setHint(getHint(board).turns[0])
               }}
               className="flex size-12 items-center justify-center rounded-full bg-purple-700"
             >
