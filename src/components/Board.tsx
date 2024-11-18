@@ -1,6 +1,6 @@
 import { Tile } from '@/components/Tile'
 import { SquareIcon } from '@/icons/Square'
-import { Coordinate, TileGroup } from '@/types'
+import { Coordinate, TileGroup } from '@/types/game'
 
 type BoardProps = {
   board: string[][]

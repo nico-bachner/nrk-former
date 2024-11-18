@@ -1,4 +1,4 @@
-import { IconProps } from '@/types'
+import { IconProps } from '@/types/svg'
 import { cn } from '@/utils/cn'
 
 export const RestartIcon: React.FC<IconProps> = ({

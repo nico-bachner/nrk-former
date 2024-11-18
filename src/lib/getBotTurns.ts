@@ -1,4 +1,4 @@
-import { Board, Hint } from '@/types'
+import { Board, Hint } from '@/types/game'
 
 import { getHint } from './getHint'
 import { getNewBoard } from './getNewBoard'

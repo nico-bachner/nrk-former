@@ -13,7 +13,7 @@ import { getBotTurns } from '@/lib/getBotTurns'
 import { getHint } from '@/lib/getHint'
 import { getNewBoard } from '@/lib/getNewBoard'
 import { getTileGroups } from '@/lib/getTileGroups'
-import { TileGroup } from '@/types'
+import { TileGroup } from '@/types/game'
 
 const BOARD = BOARDS[0].tiles
 

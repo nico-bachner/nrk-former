@@ -1,4 +1,4 @@
-import { Board, TileGroup } from '@/types'
+import { Board, TileGroup } from '@/types/game'
 
 /**
  * Executes a player turn
