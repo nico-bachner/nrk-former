@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react'
 
 import { BOARDS } from '@/boards'
 import { Board } from '@/components/Board'
+import { Button } from '@/components/Button'
 import { Counter } from '@/components/Counter'
 import { useUserRecord } from '@/hooks/useUserRecord'
 import { HintIcon } from '@/icons/Hint'
@@ -51,33 +52,23 @@ export const Game: React.FC = () => {
         </div>
 
         <div className="flex gap-4">
-          <div className="flex flex-col items-center gap-2">
-            <p className="font-bold uppercase text-purple-300">Hint</p>
+          <Button
+            label="Hint"
+            icon={HintIcon}
+            onClick={() => {
+              setHint(getHint(board).moves[0])
+            }}
+          />
 
-            <button
-              onClick={() => {
-                setHint(getHint(board).moves[0])
-              }}
-              className="flex size-12 items-center justify-center rounded-full bg-purple-700"
-            >
-              <HintIcon className="text-purple-100" />
-            </button>
-          </div>
-
-          <div className="flex flex-col items-center gap-2">
-            <p className="font-bold uppercase text-purple-300">Restart</p>
-
-            <button
-              onClick={() => {
-                setBoard(BOARD)
-                setStepCount(0)
-                setHint(undefined)
-              }}
-              className="flex size-12 items-center justify-center rounded-full bg-purple-700"
-            >
-              <RestartIcon className="text-purple-100" />
-            </button>
-          </div>
+          <Button
+            label="Restart"
+            icon={RestartIcon}
+            onClick={() => {
+              setBoard(BOARD)
+              setStepCount(0)
+              setHint(undefined)
+            }}
+          />
         </div>
       </div>
 
